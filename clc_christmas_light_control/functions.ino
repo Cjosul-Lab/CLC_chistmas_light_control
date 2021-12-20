@@ -1,7 +1,7 @@
 void serialHandler() {
   if (Serial.available()) {
     char buffer = Serial.read();
-    switch(buffer) {
+    /*switch(buffer) {
       case '0':
       Serial.print(buffer);
       Serial.println(" --> tree OFF");
@@ -18,17 +18,19 @@ void serialHandler() {
       default:
       Serial.println("buffer");
       break;
-    }
+    }*/
+    if(buffer >= 48 && buffer <= 57)
+      lightControl(buffer);
   }
 }
 
 void lightControl(int mode) {
   switch (mode) {
     case 0:
-    digitalWrite(PINLOAD, LOW);
+    digitalWrite(LOADPIN, LOW);
     break;
     case 1:
-    analogWrite(PINLOAD, 128);
+    analogWrite(LOADPIN, 255);
     break;
   }
 }
