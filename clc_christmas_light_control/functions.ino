@@ -90,10 +90,10 @@ void handleNotFound() {
 void lightControl(int mode) {
   switch (mode) {
     case 0:
-    digitalWrite(LOAD_PIN, HIGH);
+    digitalWrite(LOAD_PIN, LED_OFF);
     break;
     case 1:
-    digitalWrite(LOAD_PIN, LOW);
+    digitalWrite(LOAD_PIN, LED_ON);
     break;
     case 2:
     fader();
