@@ -1,6 +1,6 @@
 #define FADE_AMOUNT 5
 #define FADE_SPEED 200
-#define FLASH_SPEED 880
+#define FLASH_SPEED 900
 
 String handleRoot(bool ledStatus = false) {
     String ptr =
@@ -34,9 +34,9 @@ String handleRoot(bool ledStatus = false) {
  
 void handleRootDefault(){
     ledStatus = false;
-    digitalWrite(LOAD_PIN, LED_OFF);
+    //digitalWrite(LOAD_PIN, LED_OFF);
     Serial.println("Albero Status: OFF");
- 
+    selected_mode = 0;
     server.send(200, "text/html", handleRoot(ledStatus));
 }
  
@@ -44,7 +44,7 @@ void handleLedOn() {
   ledStatus = true;
   Serial.println("Albero Status: ON");
   //digitalWrite(LOAD_PIN, LED_ON);
-  lightControl(1);
+  selected_mode = 1;
   server.send(200, "text/html", handleRoot(ledStatus));
 }
  
@@ -52,21 +52,21 @@ void handleLedOff() {
   ledStatus = false;
   Serial.println("Albero Status: OFF");
   //digitalWrite(LOAD_PIN, LED_OFF);
-  lightControl(0);
+  selected_mode = 0;
   server.send(200, "text/html", handleRoot(ledStatus));
 }
 
 void handleFading() {
   ledStatus = true;
   Serial.println("Albero Status: Fading");
-  lightControl(2);
+  selected_mode = 2;
   server.send(200, "text/html", handleRoot(ledStatus));
 }
 
 void handleFlashing() {
   ledStatus = true;
   Serial.println("Albero Status: Flashing");
-  lightControl(2);
+  selected_mode = 3;
   server.send(200, "text/html", handleRoot(ledStatus));
 }
 
@@ -90,10 +90,10 @@ void handleNotFound() {
 void lightControl(int mode) {
   switch (mode) {
     case 0:
-    digitalWrite(LOAD_PIN, LOW);
+    digitalWrite(LOAD_PIN, HIGH);
     break;
     case 1:
-    digitalWrite(LOAD_PIN, HIGH);
+    digitalWrite(LOAD_PIN, LOW);
     break;
     case 2:
     fader();
@@ -105,28 +105,30 @@ void lightControl(int mode) {
 }
 
 void fader() {
-  int pointer = 0;
-  unsigned long lastTimestamp = 0;
-  while (pointer <= 51) {
+  if (pointer <= 51 && !phase) {
     analogWrite(LOAD_PIN, pointer * FADE_AMOUNT);
-    if(millis() - lastTimestamp > 20) {
+    if(millis() - lastTimestamp > FADE_SPEED) {
       pointer++;
       lastTimestamp = millis();
     }
   }
-  while (pointer >= 0) {
+  else {
+    phase = 1;
+  }
+  if (pointer >= 0 && phase) {
     analogWrite(LOAD_PIN, pointer * FADE_AMOUNT);
     if(millis() - lastTimestamp > FADE_SPEED) {
       pointer--;
       lastTimestamp = millis();
     }
   }
+  else {
+    phase = 0;
+  }
 }
 
 void flasher () {
-  int pointer = 0;
-  unsigned long lastTimestamp = 0;
-  while (pointer < 100) {
+  if (pointer < 20) {
     if(pointer % 2)
       digitalWrite(LOAD_PIN, HIGH);
     else
@@ -136,4 +138,6 @@ void flasher () {
         lastTimestamp = millis();
     }
   }
+  else
+    pointer = 0;
 }

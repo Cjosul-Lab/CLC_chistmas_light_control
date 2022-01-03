@@ -8,7 +8,7 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 
-#define LOAD_PIN LED_BUILTIN
+#define LOAD_PIN 13 //LED_BUILTIN
 #define LED_ON LOW
 #define LED_OFF HIGH
  
@@ -17,7 +17,11 @@ const char* password = "153624abDF";
  
 ESP8266WebServer server(80);
 
-bool ledStatus = false;
+bool ledStatus = false; 
+int selected_mode = 0;    //Status memory (default off)
+unsigned long lastTimestamp = 0;
+int pointer = 0;
+int phase = 0;
  
 void setup(void) {
   Serial.begin(115200);
@@ -53,4 +57,5 @@ void setup(void) {
  
 void loop(void) {
   server.handleClient();
+  lightControl(selected_mode);
 }
