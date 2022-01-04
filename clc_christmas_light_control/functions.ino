@@ -1,6 +1,6 @@
 #define FADE_AMOUNT 5
 #define FADE_SPEED 200
-#define FLASH_SPEED 900
+#define FLASH_SPEED 2500
 
 String handleRoot(bool ledStatus = false) {
     String ptr =
@@ -8,12 +8,12 @@ String handleRoot(bool ledStatus = false) {
               <head>\
                 <title>CLC Christmas light control</title>\
                 <style>\
-                  body { background-color: #00ffff4d; font-family: Arial, Helvetica, Sans-Serif; Color: blue; }\
+                  body { background-color: #ffff004d; font-family: Arial, Helvetica, Sans-Serif; Color: green; }\
                 </style>\
               </head>\
               <body>\
                 <center>\
-                <h1>Albero smart v 1.0</h1>\
+                <h1>AlberoBello v 1.2</h1>\
                 ";
  
     if (ledStatus) {
@@ -36,7 +36,7 @@ void handleRootDefault(){
     ledStatus = false;
     //digitalWrite(LOAD_PIN, LED_OFF);
     Serial.println("Albero Status: OFF");
-    selected_mode = 0;
+    selected_mode = 1;
     server.send(200, "text/html", handleRoot(ledStatus));
 }
  
@@ -89,16 +89,16 @@ void handleNotFound() {
 
 void lightControl(int mode) {
   switch (mode) {
-    case 0:
+    case 0:                           //Off
     digitalWrite(LOAD_PIN, LED_OFF);
     break;
-    case 1:
+    case 1:                           //On
     digitalWrite(LOAD_PIN, LED_ON);
     break;
-    case 2:
+    case 2:                           //Fading
     fader();
     break;
-    case 3:
+    case 3:                           //Flashing
     flasher();
     break;
   }

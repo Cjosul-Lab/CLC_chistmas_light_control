@@ -7,6 +7,7 @@
 
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
+#include <ESP8266mDNS.h>  
 
 #define LOAD_PIN 13 //LED_BUILTIN
 #define LED_ON LOW
@@ -18,7 +19,7 @@ const char* password = "153624abDF";
 ESP8266WebServer server(80);
 
 bool ledStatus = false; 
-int selected_mode = 0;    //Status memory (default off)
+int selected_mode = 1;    //Status memory (default on)
 unsigned long lastTimestamp = 0;
 int pointer = 0;
 int phase = 0;
@@ -34,7 +35,8 @@ void setup(void) {
     delay(500);
     Serial.print(".");
   }
- 
+  MDNS.begin("alberobello");
+  delay(100);
   pinMode(LOAD_PIN, OUTPUT);
  
   Serial.println("");
